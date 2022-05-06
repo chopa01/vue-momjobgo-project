@@ -3,7 +3,7 @@
     <v-list-item>
       <v-list-item-content>
         <v-list-item-title class="text-h6">Vue-Project</v-list-item-title>
-        <v-list-item-subtitle> 님 환영합니다. </v-list-item-subtitle>
+        <v-list-item-subtitle> 송연주님 환영합니다. </v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>
 
