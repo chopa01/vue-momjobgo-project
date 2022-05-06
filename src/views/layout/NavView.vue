@@ -45,7 +45,7 @@ export default {
 
   methods : {
     logout(){
-      alert('미구현입니다.');
+      alert('아직입니다.');
     }
   }
 
