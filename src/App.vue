@@ -36,6 +36,7 @@ export default {
     },
 
     created() {
+      
         if(window.location.pathname === '/'){
             this.$router.push(this.menuList.home.path)
         }
