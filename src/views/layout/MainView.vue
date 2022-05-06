@@ -1,6 +1,6 @@
 <template>  
   <v-main>
-       <v-list-item>
+      <v-list-item>
       <v-list-item-content>
         <v-list-item-title class="text-h6">todolist 기능</v-list-item-title>
         <v-list-item-subtitle>
@@ -15,7 +15,7 @@
         3) Complete -  완료된 내용 <br/>
         4) Clear completed - 체크박스 일괄 삭제 <br/>
       </div>
-           </v-list-item-subtitle>
+        </v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>
   </v-main>
