@@ -2,7 +2,11 @@
   <v-container style="max-width: 800px">
     <v-text-field
       v-model="newTask"
+<<<<<<< Updated upstream
       label="작업할 일을 등록하세요."
+=======
+      label="작업할 일을 등록하세요"
+>>>>>>> Stashed changes
       solo
       @keydown.enter="create"
     >
@@ -17,7 +21,20 @@
         </v-fade-transition>
       </template>
     </v-text-field>
+<<<<<<< Updated upstream
 
+=======
+<!--
+    <h2 class="text-h4 success--text pl-4">
+      Tasks:&nbsp;
+      <v-fade-transition leave-absolute>
+        <span :key="`tasks-${tasks.length}`">
+          {{ tasks.length }}
+        </span>
+      </v-fade-transition>
+    </h2>
+-->
+>>>>>>> Stashed changes
     <v-divider class="mt-4"></v-divider>
 
     <v-row
