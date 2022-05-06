@@ -17,16 +17,7 @@
         </v-fade-transition>
       </template>
     </v-text-field>
-<!--
-    <h2 class="text-h4 success--text pl-4">
-      Tasks:&nbsp;
-      <v-fade-transition leave-absolute>
-        <span :key="`tasks-${tasks.length}`">
-          {{ tasks.length }}
-        </span>
-      </v-fade-transition>
-    </h2>
--->
+
     <v-divider class="mt-4"></v-divider>
 
     <v-row
