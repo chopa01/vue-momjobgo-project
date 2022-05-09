@@ -18,7 +18,7 @@ import HeaderView from "./views/layout/HeaderView.vue";
 import FooterView from "./views/layout/FooterView.vue";
 import MainView from "./views/layout/MainView.vue";
 import { mapGetters } from "vuex";
-
+ 
 export default {
     name: "App",
 
@@ -28,7 +28,8 @@ export default {
         NavView,
         HeaderView,
         MainView,
-        FooterView,
+        FooterView 
+      
     },
 
     computed : {

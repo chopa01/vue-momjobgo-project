@@ -1,5 +1,6 @@
 import HomeView from '@/views/HomeView.vue'
 import AboutView from '@/views/AboutView.vue'
+import AxiosView from '@/views/AxiosView.vue'
 
 export default {
 
@@ -30,6 +31,16 @@ export default {
                     icon: `question_mark`
                 },
                 component : AboutView
+            },
+
+            axios : {
+                path: `/axios`,
+                name: `axios`,
+                meta: {
+                    title: `Axios`,
+                    icon: `question_mark`
+                },
+                component : AxiosView   
             }
         },
 
