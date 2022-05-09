@@ -47,11 +47,7 @@
     <v-divider class="mb-4"></v-divider>
 
     <v-card v-if="tasks.length > 0">
-      <v-slide-y-transition
-        class="py-0"
-        group
-        tag="v-list"
-      >
+
         <template v-for="(task, i) in filteredTodos">
           <v-divider
             v-if="i !== 0"
@@ -83,7 +79,7 @@
             </v-scroll-x-transition>
           </v-list-item>
         </template>
-      </v-slide-y-transition>
+    
     </v-card>
   </v-container>
 </template>
