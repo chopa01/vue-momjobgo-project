@@ -2,10 +2,10 @@
    <v-container style="max-width: 800px">
  
         <v-col  md="4">
-         <v-text-field    v-model="search"
+         <v-text-field   v-model="keyword" 
             placeholder="검색어를 입력하세요"
-            solo  @keydown.enter="searchMap"> </v-text-field>
-          <v-btn  elevation="2" @click="searchMap">검색</v-btn>
+            solo  @keydown.enter="searchPlace"> </v-text-field>
+          <v-btn  elevation="2" @click="searchPlace">검색</v-btn>
         </v-col>
  
 
@@ -19,7 +19,7 @@ import axios from "axios";
 
 export default {
     data: () => ({
-        search:''
+    keyword:'',
     }),
    mounted() {
          
@@ -31,7 +31,7 @@ export default {
         script.onload = () => kakao.maps.load(this.initMap);
         
         script.src =
-        `http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAO_MAP}&&libaries=services` ;
+        `http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAO_MAP}&libraries=services` ;
         
         document.head.appendChild(script);
    
@@ -49,35 +49,39 @@ methods: {
         var map = new kakao.maps.Map(mapContainer, mapOption);
         
     },
-    searchMap() {
-                // axios.get(`https://dapi.kakao.com/v2/local/search/address.json?query=${this.search}`, {
-                //     headers : {
-                //         Authorization: `KakaoAK ${process.env.VUE_APP_KAKAO_KEY}`
-                //     }
-                // }).then(repsonse => {
-                //     console.log(repsonse);
-                //     this.list = repsonse.data.documents;
-                // }).catch(error => {
-                //     console.error('=========='+error);
-                // }) 
-                // 장소 검색 객체를 생성합니다
-                  var infowindow = new kakao.maps.InfoWindow({zIndex:1});
-                var ps = new kakao.maps.services.Place(map);
-                var keyword = '이태원맛집';
+    searchPlace(){ 
+       
+        const ps = new window.kakao.maps.services.Places();
+        ps.keywordSearch(this.keyword, (data, status, pagination) => {
+           if (status === kakao.maps.services.Status.OK) {
 
-                // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
-                ps.keywordSearch( keyword, function(data, status, pagination) {
-                    if (status === kakao.maps.services.Status.OK) {
-                        // 데이터 확인
-                        console.log(data);
-                    } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-                        alert('검색 결과가 존재하지 않습니다.');
-                        return;
-                    } else if (status === kakao.maps.services.Status.ERROR) {
-                        alert('검색 결과 중 오류가 발생했습니다.');
-                        return;
-                    }
-                });
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+        // LatLngBounds 객체에 좌표를 추가합니다
+        var bounds = new kakao.maps.LatLngBounds();
+            for (var i=0; i<data.length; i++) {
+               displayMarker(data[i]);    
+                bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+            }       
+
+            // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+            map.setBounds(bounds);
+            } 
+        });
+        },
+        displayMarker(place) {
+    
+        // 마커를 생성하고 지도에 표시합니다
+        var marker = new window.kakao.maps.Marker({
+            map: map,
+            position: new kakao.maps.LatLng(place.y, place.x) 
+        });
+
+        // 마커에 클릭이벤트를 등록합니다
+        kakao.maps.event.addListener(marker, 'click', function() {
+            // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+            infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
+            infowindow.open(map, marker);
+        });
         }
     }  
  
