@@ -38,7 +38,7 @@ export default {
                 name: `axios`,
                 meta: {
                     title: `Axios`,
-                    icon: `question_mark`
+                    icon: `mdi-map-marker`
                 },
                 component : AxiosView   
             }
