@@ -61,7 +61,15 @@ methods: {
 			    this.$refs.cursor.focus();
           return false;
         }
-        const ps = new window.kakao.maps.services.Places();
+/////////////////////////////////////////////////
+
+
+
+
+
+
+//////////////////////////////////////////////
+        const ps = new kakao.maps.services.Places();
 
         ps.keywordSearch(this.keyword, (data, status, pagination) => {
            if (status === kakao.maps.services.Status.OK) {
@@ -76,41 +84,42 @@ methods: {
                 var iwContent = '<div style="padding:5px;z-index:-1;">'+ data[i].place_name +'</div>'; // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
                 this.disPlayMarker(data[i].y, data[i].x,this.map,iwContent );
             
-            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+                bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
             }       
             // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+            
             this.map.setBounds(bounds);
             } 
         });
         },
 
-        disPlayMarker(xpos, ypos, map,iwContent) {
-          var  marker = new kakao.maps.Marker({
-                  position: new kakao.maps.LatLng(xpos, ypos) 
-              });          
-          marker.setMap(map);
-          this.displayInfowindow(marker, iwContent,this.map);
-        },
+    disPlayMarker(xpos, ypos, map,iwContent) {
+      var  marker = new kakao.maps.Marker({
+              position: new kakao.maps.LatLng(xpos, ypos) 
+          });          
+      marker.setMap(map);
+      this.displayInfowindow(marker, iwContent,this.map);
+    },
 
-        displayInfowindow (marker, iwContent,map) {
-          // 인포윈도우를 생성합니다
-           var infowindow = new kakao.maps.InfoWindow({
-                content : iwContent,
-          
-            });
-            // 마커에 마우스오버 이벤트를 등록합니다
-            kakao.maps.event.addListener(marker, 'mouseover', function() {
-              // 마커에 마우스오버 이벤트가 발생하면 인포윈도우를 마커위에 표시합니다
-                infowindow.open(map,marker);
-            });
+    displayInfowindow (marker, iwContent,map) {
+      // 인포윈도우를 생성합니다
+        var infowindow = new kakao.maps.InfoWindow({
+            content : iwContent,
+      
+        });
+        // 마커에 마우스오버 이벤트를 등록합니다
+        kakao.maps.event.addListener(marker, 'mouseover', function() {
+          // 마커에 마우스오버 이벤트가 발생하면 인포윈도우를 마커위에 표시합니다
+            infowindow.open(map,marker);
+        });
 
-            // 마커에 마우스아웃 이벤트를 등록합니다
-            kakao.maps.event.addListener(marker, 'mouseout', function() {
-                // 마커에 마우스아웃 이벤트가 발생하면 인포윈도우를 제거합니다
-                infowindow.close();
-            })
+        // 마커에 마우스아웃 이벤트를 등록합니다
+        kakao.maps.event.addListener(marker, 'mouseout', function() {
+            // 마커에 마우스아웃 이벤트가 발생하면 인포윈도우를 제거합니다
+            infowindow.close();
+        })
 
-        }
+    }
         }
  
 }
