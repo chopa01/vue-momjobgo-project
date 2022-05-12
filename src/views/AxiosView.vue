@@ -1,7 +1,7 @@
 <template>
-   <v-container style="max-width: 800px">
+   <v-container style="max-width: 900px">
  
-        <v-text-field v-model="keyword" @keydown.enter="searchPlace">
+        <v-text-field v-model="keyword" @keydown.enter="searchPlace" ref="cursor">
         <template v-slot:label>
           검색어를 입력하세요<v-icon style="vertical-align: middle" @click="searchPlace">
             mdi-file-find
@@ -57,7 +57,11 @@ methods: {
     },
 
     searchPlace(){  
-     
+        if (this.keyword == "") {
+          alert('검색어를 입력하세요');
+			    this.$refs.cursor.focus();
+          return false;
+        }
         const ps = new window.kakao.maps.services.Places();
 
         ps.keywordSearch(this.keyword, (data, status, pagination) => {
