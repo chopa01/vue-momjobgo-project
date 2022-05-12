@@ -1,19 +1,44 @@
 <template>
    <v-container style="max-width: 900px">
- 
-        <v-text-field v-model="keyword" @keydown.enter="searchPlace" ref="cursor">
-        <template v-slot:label>
-          검색어를 입력하세요<v-icon style="vertical-align: middle" @click="searchPlace">
-            mdi-file-find
-          </v-icon>
-        </template>
-      </v-text-field>
-
-         <!-- <v-text-field   v-model="keyword" 
-            placeholder="검색어를 입력하세요"
-            solo  @keydown.enter="searchPlace"> </v-text-field>-->
-
+    <v-text-field v-model="keyword" @keydown.enter="searchPlace" ref="cursor">
+    <template v-slot:label>
+       키워드로 검색하세요 <v-icon style="vertical-align: middle" @click="searchPlace">
+        mdi-file-find
+      </v-icon>
+    </template>
+  </v-text-field>
   <div id="map" class="map"></div>  
+  <v-simple-table dense>
+      <template v-slot:default v-if="list.length >0 ">
+        <thead>
+        <tr>
+            <th colspan="3" class="text-left"><font color="blue">{{list_meta.same_name.selected_region}} </font>주변<font color="blue"> {{list_meta.same_name.keyword}}</font>검색결과</th>
+          </tr>
+          <tr>
+            <th colspan="3" class="text-left">장소 <b>{{list_meta.total_count}}</b> 건 </th>
+          </tr>
+          <tr>
+            <th class="text-left">
+              상호명
+            </th>
+            <th class="text-left">
+              위치
+            </th>
+            <th class="text-left">
+              전화번호
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(item, index) in list" :key="index">
+            <td>{{ item.place_name }}</td>
+            <td>{{ item.road_address_name }}</td>
+            <td>{{ item.phone }}</td>
+          </tr>
+        </tbody>
+      </template>
+    </v-simple-table>
  </v-container>
 </template>
 
@@ -24,6 +49,8 @@ import axios from "axios";
 export default {
     data: () => ({
     keyword:'',
+    list : [],
+    list_meta : []
     }),
    mounted() {
          
@@ -55,21 +82,27 @@ methods: {
             // console.log(map)
     },
 
-    searchPlace(){  
+    searchPlace() {  
         if (this.keyword == "") {
           alert('검색어를 입력하세요');
 			    this.$refs.cursor.focus();
           return false;
         }
 /////////////////////////////////////////////////
-
-
-
-
-
+        axios.get(`https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000&query=${this.keyword}`, {
+            headers : {
+                Authorization:`KakaoAK ${process.env.VUE_APP_KAKAO_KEY}`
+            }
+        }).then(repsonse => {         
+            this.list = repsonse.data.documents;
+            this.list_meta= repsonse.data.meta;
+            //console.log(repsonse.data.meta);
+        }).catch(error => {
+            console.error(error);
+        }) 
 
 //////////////////////////////////////////////
-        const ps = new kakao.maps.services.Places();
+        const ps = new kakao.maps.services.Places(this.map);
 
         ps.keywordSearch(this.keyword, (data, status, pagination) => {
            if (status === kakao.maps.services.Status.OK) {
@@ -128,7 +161,7 @@ methods: {
 <style scoped>
 #map {
  
-  height: 600px;
+  height: 500px;
  
 }
 </style>
