@@ -16,7 +16,7 @@
   <div id="map" class="map"></div>  
  </v-container>
 </template>
- 
+
 <script>
 
 import axios from "axios";
@@ -31,12 +31,11 @@ export default {
         this.initMap();
     } else {
         const script = document.createElement('script');
-        /* global kakao */
+   
         script.onload = () => kakao.maps.load(this.initMap);
-        
-        script.src =
-        `http://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAO_MAP}&libraries=services` ;
-        
+
+        script.src =  `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAO_MAP}&libraries=services` ;
+    
         document.head.appendChild(script);
    
     }
