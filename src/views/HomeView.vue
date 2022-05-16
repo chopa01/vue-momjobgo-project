@@ -135,8 +135,6 @@
   export default {
     name: 'Home',
       data: () => ({
-      currentX : "127.06283102249932",
-      currentY : "37.514322572335935",
       keyword:'',
       list : [],
       list_meta : [],
@@ -144,8 +142,8 @@
       dialgSearch : false,
       //테이블 헤더.
             headers: [
-                { text: "상호명", value: "place_name" },
                 { text: "카테고리", value: "category_name" },
+                { text: "상호명", value: "place_name" },
                 { text: "위치", value: "road_address_name" },
                 { text: "전화번호", value: "phone" },
            
@@ -170,15 +168,16 @@
         },
         //최근 검색
         items: [
-        { text: '주변', icon: 'mdi-clock' },
+        { text: '주변', icon: 'mdi-map-marker' },
         { text: 'Audience', icon: 'mdi-map-marker' },
         { text: 'Conversions', icon: 'mdi-map-marker' },
-      ],
         
+      ],
+ 
     }),
 
     methods: {
-
+  
 
     searchPlace () {
         // if (this.keyword == "") {
@@ -189,7 +188,7 @@
         this.dialgSearch = false;
         console.log(this.currentY);
 /////////////////////////////////////////////////
-        axios.get(`https://dapi.kakao.com/v2/local/search/keyword.json?y=${this.currentY}&x=${this.currentX}&radius=20000&query=${this.keyword}`, {
+        axios.get(`https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000&query=${this.keyword}`, {
             headers : {
                 Authorization:`KakaoAK ${process.env.VUE_APP_KAKAO_KEY}`
             }
@@ -202,27 +201,27 @@
         }) 
       },
       //현재 위치 가져오기
-      currGeolocation () {
-        if (navigator.geolocation) {
+    //   currGeolocation () {
+    //     if (navigator.geolocation) {
             
-            // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-            navigator.geolocation.getCurrentPosition(function(position) {
+    //         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+    //         navigator.geolocation.getCurrentPosition(function(position) {
                 
-                var lat = position.coords.latitude, // 위도
+    //             var lat = position.coords.latitude, // 위도
                 
-                    lon = position.coords.longitude; // 경도
+    //                 lon = position.coords.longitude; // 경도
          
-                var currentY =lon;
-                var currentX = lat;
+    //             var currentY =lon;
+    //             var currentX = lat;
               
                  
                            
-            });         
-        } else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다          
-           // var locPosition = new kakao.maps.LatLng(33.450701, 126.570667) 
-        }
+    //         });         
+    //     } else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다          
+    //        // var locPosition = new kakao.maps.LatLng(33.450701, 126.570667) 
+    //     }
        
-      },
+    //   },
 
       //검색창
       popModalSearch() {
