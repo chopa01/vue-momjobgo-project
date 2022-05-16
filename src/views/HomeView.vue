@@ -17,7 +17,7 @@
                     append-icon="mdi-magnify"
                     label="검색"
                     single-line
-                    hide-details  @keydown.enter="popModalSearch"
+                    hide-details  @click="popModalSearch($event)"
                 ></v-text-field>
                 <v-spacer></v-spacer> 
                 <!-- 자세히 보기 alert -->
@@ -77,6 +77,7 @@
                         <v-btn color="blue darken-1" text @click="closeDetail"> 확인 </v-btn>
                     </v-card-actions>
                 </v-dialog>
+                <!--검색창-->
                 <v-dialog v-model="dialgSearch" max-width="600">
                     <v-card
                         class="mx-auto"
@@ -105,7 +106,7 @@
                                 <v-icon v-text="item.icon"></v-icon>
                             </v-list-item-icon>
                             <v-list-item-content>
-                                <v-list-item-title v-text="item.text"></v-list-item-title>
+                                <v-list-item-title v-text="item.text" @click="searchPlace2(item.text)"></v-list-item-title>
                             </v-list-item-content>
                             </v-list-item>
                         </v-list-item-group>
@@ -118,7 +119,7 @@
 
         <template #item.place_name ="{ item }">
             <span style="cursor: pointer;" @click="popDetailModal(item)">
-                {{item.place_name }} 
+                {{selectedItem.place_name }} 
            
             </span>
         </template>
@@ -169,26 +170,21 @@
         //최근 검색
         items: [
         { text: '주변', icon: 'mdi-map-marker' },
-        { text: 'Audience', icon: 'mdi-map-marker' },
-        { text: 'Conversions', icon: 'mdi-map-marker' },
-        
+        { text: '판교 맛집', icon: 'mdi-map-marker' },
       ],
- 
     }),
 
     methods: {
-  
-
-    searchPlace () {
-        // if (this.keyword == "") {
-        //   alert('검색어를 입력하세요');
-		// 	    this.$refs.cursor.focus();
-        //   return false;
-        // }
-        this.dialgSearch = false;
-        console.log(this.currentY);
-/////////////////////////////////////////////////
-        axios.get(`https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000&query=${this.keyword}`, {
+       create () {
+        alert("ggg");    
+        this.items.push({
+            icon : 'mdi-map-marker',
+            text: this.keyword,
+        })
+        console.log(this.keyword);
+      },       
+    kakaoSearch (p_search) {
+        axios.get(`https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000&query=${p_search}`, {
             headers : {
                 Authorization:`KakaoAK ${process.env.VUE_APP_KAKAO_KEY}`
             }
@@ -199,7 +195,27 @@
         }).catch(error => {
             console.error(error);
         }) 
+    },
+
+    searchPlace () {
+        if (this.keyword == "") {
+            alert('검색어를 입력하세요');
+			this.$refs.cursor.focus();
+          return false;
+        }
+        this.create;
+        this.dialgSearch = false;
+/////////////////////////////////////////////////
+        this.kakaoSearch(this.keyword);
       },
+
+    searchPlace2 (p_search) {
+
+        this.dialgSearch = false;
+/////////////////////////////////////////////////
+        this.kakaoSearch(p_search);
+      },
+
       //현재 위치 가져오기
     //   currGeolocation () {
     //     if (navigator.geolocation) {
@@ -223,8 +239,9 @@
        
     //   },
 
+
       //검색창
-      popModalSearch() {
+      popModalSearch(event) {
              this.dialgSearch = true;
       },
         // 상세정보 보기 모달 창 on
