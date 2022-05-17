@@ -6,18 +6,11 @@
             <v-toolbar flat>
                 <v-toolbar-title>간단한 게시판</v-toolbar-title>
                 <v-divider class="mx-4" inset vertical></v-divider>
-                <!-- <v-text-field
-                    v-model="keyword"
-                    append-icon="mdi-magnify"
-                    label="검색"
-                    single-line
-                    hide-details  @keydown.enter="searchPlace"
-                ></v-text-field> -->
                 <v-text-field 
                     append-icon="mdi-magnify"
-                    label="검색"
+                    label="검색" v-model="keyword"
                     single-line
-                    hide-details  @click="popModalSearch($event)"
+                    hide-details  @click="popModalSearch($event)" @keydown.enter="searchPlace"
                 ></v-text-field>
                 <v-spacer></v-spacer> 
                 <!-- 자세히 보기 alert -->
@@ -70,7 +63,7 @@
                     
                             </v-list-item-content>
                         </v-list-item>
-                        </v-list>
+                       
                     </v-card> 
                     <v-card-actions>
                         <v-spacer></v-spacer>
@@ -91,7 +84,7 @@
                             append-icon="mdi-magnify"
                             label="검색"
                             single-line
-                            hide-details  @keydown.enter="searchPlace"
+                            hide-details  @keydown.enter="searchPlace" ref="cursor"
                         ></v-text-field>
                             </v-subheader>
                         <v-list-item-group
@@ -116,10 +109,16 @@
             </v-toolbar>
         </template>
 
+        <template #item.category_name ="{ item }">
+            <span style="cursor: pointer;" @click="popDetailModal(item)">
+                {{item.category_name }} 
+           
+            </span>
+        </template>
 
         <template #item.place_name ="{ item }">
             <span style="cursor: pointer;" @click="popDetailModal(item)">
-                {{selectedItem.place_name }} 
+                {{item.place_name }} 
            
             </span>
         </template>
@@ -157,6 +156,7 @@
             address_name:"",
             place_name:"",
             distance:"",
+            id:"",
     
         },
         defaultItem: {
@@ -165,24 +165,25 @@
             phone:"",
             address_name:"",
             place_name:"",
-            distance:"",            
+            distance:"",  
+            id:"",          
         },
         //최근 검색
         items: [
-        { text: '주변', icon: 'mdi-map-marker' },
+        { text: '이태원 맛집', icon: 'mdi-map-marker' },
         { text: '판교 맛집', icon: 'mdi-map-marker' },
       ],
     }),
 
     methods: {
-       create () {
-        alert("ggg");    
+
+       create () {   
         this.items.push({
             icon : 'mdi-map-marker',
             text: this.keyword,
         })
-        console.log(this.keyword);
-      },       
+      },    
+
     kakaoSearch (p_search) {
         axios.get(`https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000&query=${p_search}`, {
             headers : {
@@ -191,7 +192,7 @@
         }).then(repsonse => {         
             this.list = repsonse.data.documents;
             this.list_meta= repsonse.data.meta;
-            //console.log(repsonse.data.meta);
+            //console.log(repsonse.data.documents);
         }).catch(error => {
             console.error(error);
         }) 
@@ -203,16 +204,16 @@
 			this.$refs.cursor.focus();
           return false;
         }
-        this.create;
+        this.create();
         this.dialgSearch = false;
-/////////////////////////////////////////////////
+///////////////////////////////////////////////
         this.kakaoSearch(this.keyword);
       },
 
     searchPlace2 (p_search) {
 
         this.dialgSearch = false;
-/////////////////////////////////////////////////
+ 
         this.kakaoSearch(p_search);
       },
 
