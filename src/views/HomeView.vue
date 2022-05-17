@@ -1,8 +1,16 @@
+
 <template>
-
     <v-data-table :headers="headers" :items="list" sort-by="calories" class="elevation-1" :keyword="keyword">
-
         <template #top>
+            <v-tabs
+                fixed-tabs
+                background-color="indigo"
+                dark>
+                <v-tab @click="kakaoCategory('AD5')">숙박 </v-tab>
+                <v-tab @click="kakaoCategory('FD6')">음식점</v-tab>
+                <v-tab @click="kakaoCategory('AT4')">관광명소</v-tab>
+                <v-tab @click="kakaoCategory('CT1')">문화시설</v-tab>
+            </v-tabs>
             <v-toolbar flat>
                 <v-toolbar-title>간단한 게시판</v-toolbar-title>
                 <v-divider class="mx-4" inset vertical></v-divider>
@@ -122,7 +130,10 @@
            
             </span>
         </template>
-
+        <!-- 데이터 없을때 화면 -->
+        <template #no-data>
+            <v-btn color="primary" @click="initialize"> 새로고침 </v-btn>
+        </template>
     </v-data-table>
     
 </template>
@@ -130,9 +141,10 @@
 <script>
   import axios from "axios";
   import { mapGetters } from "vuex";
-
+  import VueGeolocationApi from 'vue-geolocation-api';
 
   export default {
+      
     name: 'Home',
       data: () => ({
       keyword:'',
@@ -170,13 +182,27 @@
         },
         //최근 검색
         items: [
+        { text: '주변', icon: 'mdi-map-marker' },
         { text: '이태원 맛집', icon: 'mdi-map-marker' },
         { text: '판교 맛집', icon: 'mdi-map-marker' },
       ],
+      currentX:"",
+      currentY:""
     }),
+    
+    mounted() {
+        this.currentX = "127.06283102249932", //기본값 셋팅
+        this.currentY="37.514322572335935",
+        this.kakaoCategory('AD5');
+    },
+    created() {
+        this.initialize();
+    },
 
     methods: {
-
+        initialize() {
+            this.kakaoCategory('AD5');
+        },
        create () {   
         this.items.push({
             icon : 'mdi-map-marker',
@@ -196,7 +222,27 @@
         }).catch(error => {
             console.error(error);
         }) 
+        this.clearSelectedItem();
+        this.keyword="";
     },
+
+    kakaoCategory(p_code) {
+        //console.log(this.currentY);
+        axios.get(`https://dapi.kakao.com/v2/local/search/category.json?category\_group\_code=${p_code}&radius=20000&y=${this.currentY}&x=${this.currentX}`, {
+            headers : {
+                Authorization:`KakaoAK ${process.env.VUE_APP_KAKAO_KEY}`
+            }
+        }).then(repsonse => {         
+            this.list = repsonse.data.documents;
+            this.list_meta= repsonse.data.meta;
+           // console.log(repsonse.data.documents);
+        }).catch(error => {
+            console.error(error);
+        }) 
+        this.clearSelectedItem();
+    },
+
+
 
     searchPlace () {
         if (this.keyword == "") {
@@ -212,33 +258,23 @@
 
     searchPlace2 (p_search) {
 
+        if(p_search =="주변") {  
+            navigator.geolocation.getCurrentPosition(pos => {
+            this.currentY = pos.coords.latitude;
+            this.currentX = pos.coords.longitude;
+            }, err => {   
+            console.error(error);
+            })
+
+            this.kakaoCategory('AD5');
+        }else {
+            this.kakaoSearch(p_search);
+        }
         this.dialgSearch = false;
  
-        this.kakaoSearch(p_search);
+        
       },
 
-      //현재 위치 가져오기
-    //   currGeolocation () {
-    //     if (navigator.geolocation) {
-            
-    //         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-    //         navigator.geolocation.getCurrentPosition(function(position) {
-                
-    //             var lat = position.coords.latitude, // 위도
-                
-    //                 lon = position.coords.longitude; // 경도
-         
-    //             var currentY =lon;
-    //             var currentX = lat;
-              
-                 
-                           
-    //         });         
-    //     } else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다          
-    //        // var locPosition = new kakao.maps.LatLng(33.450701, 126.570667) 
-    //     }
-       
-    //   },
 
 
       //검색창

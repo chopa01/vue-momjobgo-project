@@ -3,6 +3,7 @@ import LoginView from '@/views/login/LoginView.vue'
 import UserView from '@/views/UserView.vue'
 import BoardView from '@/views/board/BoardsView.vue'
 
+
 export default {
 
     namespaced : true,
@@ -28,6 +29,7 @@ export default {
                 component : HomeView
             },
             
+     
             board : {
                 path: `/board`,
                 name: `board`,
