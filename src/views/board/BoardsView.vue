@@ -107,7 +107,14 @@
 
         <!-- 테이블 제목 -->
         <!-- 테이블 제목 클릭시 popDetailModal(item) 메소드를 호출하도록 구현, 댓글 갯수가 제목 옆에 보이도록 구현.-->
-
+        <template #item.title="{ item }">
+            <span style="cursor: pointer;" @click="popDetailModal(item)"> 
+                {{item.title}} 
+                <template v-if="item.commentCnt > 0">
+                    ({{item.commentCnt}})
+                </template> 
+            </span>
+        </template>
         <!-- 테이블 날짜 -->
         <template #item.createdAt="{ item }">
             <span> {{ new Date(item.createdAt) | getWriteTime}} </span>
@@ -135,6 +142,7 @@
     import BoardCommentsViewVue from "./BoardCommentsView.vue";
     import BoardMixin from "@/mixins/board";
     import DateMixin from "@/mixins/date";
+ 
 
     export default {
         mixins : [BoardMixin, DateMixin],
@@ -224,15 +232,20 @@
 
         methods: {
             initialize() {
-                this.callBoards();
+               this.callBoards();
             },
 
-            callBoards() {
+            async callBoards() {
                 /**
                  * 게시판 목록 호출.
                  * 
                  * boards에 응답 결과를 대입해준다.
                  */
+                const response = await this.$api("/api/board", "get");
+                if (response.status === this.HTTP_OK) {
+                    this.boards = response.data;
+                }
+
             },
 
             // 상세정보 보기 모달 창 on
@@ -257,10 +270,17 @@
                 this.dialogDelete = true;
             },
 
-            deleteItem() {
+            async deleteItem() {
                 /**
                  * 게시물 삭제 구현.
                  */
+                const bno = this.selectedItem.bno;
+                const response = await this.$api(`/api/board/${bno}`, 'delete')
+                if(response.status === this.HTTP_OK){
+                    alert('삭제 되었습니다.');
+                    this.callBoards();
+                }
+                this.closeDelete();
             },
 
             // 글 등록 or 수정 모달 닫기.
@@ -288,16 +308,35 @@
                 this.selectedIndex = -1;
             },
 
-            save() {
+            async save() {
                 if (this.isModify) {
                     /**
                      * 글 수정.
                      */
+                    const response = await this.$api("/api/board", "PATCH", {
+                        bno: this.selectedItem.bno,
+                        title: this.selectedItem.title,
+                        contents: this.selectedItem.contents,
+                    });
+                    if(response.status === this.HTTP_OK || response.status === this.HTTP_CREATED){
+                        alert("수정되었습니다.");
+                        this.dialogEdit = false;
+                    }
                 } else {
                     /**
                      * 글 신규등록.
                      */
+                     const response = await this.$api("/api/board", "POST", {
+                        title: this.selectedItem.title,
+                        contents: this.selectedItem.contents,
+                    });
+                    if(response.status === this.HTTP_OK || response.status === this.HTTP_CREATED){
+                        alert("등록되었습니다.");
+                        this.dialogEdit = false;
+                    }                   
                 }
+                this.callBoards();
+                this.closeEdit();
             },
 
             // 댓글이 업데이트 될 때 실행.
@@ -305,16 +344,23 @@
                 this.callBoards();
             },
 
-            callEmotion(){
+            async  callEmotion(){
                 /**
                  * 좋아요 불러오기.
                  */
+                const response = await this.$api(`/api/board/emotion/${this.selectedItem.bno}`, 'GET', null);
+                if(response.status === this.HTTP_OK){
+                    this.emotionOn = response.data.emotion;
+                }
             },
 
-            clickEmotion(item, index){
+            async clickEmotion(item, index){
                 /**
                  * 감정표현 클릭.
-                 */             
+                 */  
+                this.emotionOn = this.emotionOn === item.value ? null : item.value;
+                await this.$api(`/api/board/emotion/${this.selectedItem.bno}`, 'POST', {emotion : this.emotionOn})
+                this.callBoards();              
             },
 
         }

@@ -38,8 +38,10 @@
 </template>
 
 <script>
+    import { mapGetters } from "vuex";
+    import DateMixin from "@/mixins/date";
     export default {
-
+        mixins : [DateMixin],
         props : {
             bno : {
                 type : Number
@@ -63,6 +65,12 @@
                  * 
                  * bno가 0일때는 조회 호출하지 않음.
                  */
+                if(this.bno !== 0){
+                    const response = await this.$api(`/api/board/comment/${this.bno}`, 'GET', null);
+                    if(response.status === this.HTTP_OK){
+                        this.commentList = response.data;
+                    }
+                }
             },
 
             async postComment(){
@@ -71,6 +79,17 @@
                  * 
                  * 댓글 입력란에 값이 없으면 '댓글을 입력해주세요 alert'
                  */
+                 if(this.newComment){
+                    const response = await this.$api(`/api/board/comment/${this.bno}`,'POST', {comment : this.newComment});
+                    if(response.status === this.HTTP_OK || response.status === this.HTTP_CREATED){
+                        alert('댓글 등록되었습니다.');
+                        this.callCommentList();
+                        this.refreshBoardList();
+                        this.newComment = ''
+                    }
+                } else {
+                    alert('댓글을 입력해주세요');
+                }               
             },
 
             async deleteComment(id){
@@ -79,6 +98,16 @@
                  * 
                  * 댓글 삭제 여부 확인.
                  */
+                if(!confirm('댓글을 삭제 하시겠습니까?')){
+                    return false;
+                }
+                const response = await this.$api(`/api/board/comment/${id}`,'DELETE',null);
+                
+                if(response.status === this.HTTP_OK){
+                    alert('댓글이 삭제되었습니다.');
+                    this.callCommentList();
+                    this.refreshBoardList();
+                }
             },
 
             // 상위 게시판 컴포넌트에 댓글 업데이트를 알림.
@@ -92,6 +121,9 @@
                 this.callCommentList();
             },
         },
+        computed : {
+            ...mapGetters('user', ['id'])
+        }
 
     }
 </script>
