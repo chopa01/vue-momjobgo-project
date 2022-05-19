@@ -229,7 +229,7 @@
         }).then(repsonse => {         
             this.list = repsonse.data.documents;
            // this.list_meta= repsonse.data.meta;
-           console.log(repsonse.data.documents);
+          // console.log(repsonse.data.documents);
             this.currentX = repsonse.data.documents[0].x;
             this.currentY = repsonse.data.documents[0].y;
         }).catch(error => {
