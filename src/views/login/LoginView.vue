@@ -36,7 +36,7 @@
 <script>
     import SignUpModalViewVue from "./SignUpModalView.vue";
 
-    import { mapActions } from "vuex"
+    import { mapActions, mapGetters } from "vuex"
 
     export default {
         data : () => ({
@@ -51,6 +51,9 @@
 
         beforeDestroy() {
             this.setAllVisible(true);
+        },
+        computed : {
+            ...mapGetters('page', ['basePath'])
         },
 
         methods : {
