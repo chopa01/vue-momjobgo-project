@@ -72,7 +72,7 @@
                     const token = response.data.token;
                     //console.log(token);
                     this.setToken(token);
-                    location.href='/'
+                    location.href=this.basePath;
                 }
 
             }
