@@ -155,7 +155,6 @@
       data: () => ({
       keyword:'',
       list : [],
-      list_meta : [],
       dialgDetail : false,
       dialgSearch : false,
       //테이블 헤더.
@@ -174,8 +173,7 @@
             address_name:"",
             place_name:"",
             distance:"",
-            id:"",
-    
+            id:"",  
         },
         defaultItem: {
             x: "",
@@ -230,7 +228,8 @@
             }
         }).then(repsonse => {         
             this.list = repsonse.data.documents;
-            this.list_meta= repsonse.data.meta;
+           // this.list_meta= repsonse.data.meta;
+           console.log(repsonse.data.documents);
             this.currentX = repsonse.data.documents[0].x;
             this.currentY = repsonse.data.documents[0].y;
         }).catch(error => {
@@ -248,8 +247,7 @@
             }
         }).then(repsonse => {         
             this.list = repsonse.data.documents;
-            this.list_meta= repsonse.data.meta;
-            //현재 위치 셋팅
+           // this.list_meta= repsonse.data.meta;
  
         }).catch(error => {
             console.error(error);
@@ -273,7 +271,7 @@
       },
 
     searchPlace2 (p_search) {
-
+        //console.log(p_search);
         if(p_search =="주변") {  
             navigator.geolocation.getCurrentPosition(pos => {
             this.currentY = pos.coords.latitude;
@@ -281,7 +279,6 @@
             }, err => {   
             console.error(error);
             })
-
             this.kakaoCategory('AD5');
         }else {
             this.kakaoSearch(p_search);
