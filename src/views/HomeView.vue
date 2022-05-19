@@ -12,15 +12,21 @@
                 <v-tab @click="kakaoCategory('CT1')">문화시설</v-tab>
             </v-tabs>
             <v-toolbar flat>
-                <v-toolbar-title>간단한 게시판</v-toolbar-title>
+                <v-toolbar-title><img id="testImg" src=""> </v-toolbar-title>
                 <v-divider class="mx-4" inset vertical></v-divider>
                 <v-text-field 
                     append-icon="mdi-magnify"
                     label="검색" v-model="keyword"
                     single-line
                     hide-details  @click="popModalSearch($event)" @keydown.enter="searchPlace"
-                ></v-text-field>
+                ></v-text-field><div><img id="testImg" src=""> </div> 
+                   
+                <v-btn color="primary" dark class="mb-2"  @click="searchPlace2('주변')">
+                    현재 위치
+                </v-btn>
+                  
                 <v-spacer></v-spacer> 
+          
                 <!-- 자세히 보기 alert -->
                 <v-dialog v-model="dialgDetail" max-width="375">
                     <v-card
@@ -186,22 +192,18 @@
         { text: '이태원 맛집', icon: 'mdi-map-marker' },
         { text: '판교 맛집', icon: 'mdi-map-marker' },
       ],
-      currentX:"",
-      currentY:""
+      currentX:"127.06283102249932",
+      currentY:"37.514322572335935"
     }),
-    
-    mounted() {
-        this.currentX = "127.06283102249932", //기본값 셋팅
-        this.currentY="37.514322572335935",
-        this.kakaoCategory('AD5');
-    },
+ 
     created() {
         this.initialize();
     },
 
     methods: {
         initialize() {
-            this.kakaoCategory('AD5');
+        this.kakaoCategory('AD5');
+        this.getWeatherInfo();
         },
        create () {   
         this.items.push({
@@ -210,15 +212,27 @@
         })
       },    
 
-    kakaoSearch (p_search) {
-        axios.get(`https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000&query=${p_search}`, {
+    getWeatherInfo() {
+        axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${this.currentY}&lon=${this.currentX}&appid=${process.env.VUE_APP_WEATHER_KEY}&units=metric`
+        ).then(repsonse => {   
+     
+            document.getElementById("testImg").src =  "http://openweathermap.org/img/wn/" + repsonse.data.weather[0].icon + "@2x.png"; 
+        }).catch(error => {
+            console.error(error);
+        }
+        )
+    },
+
+   async kakaoSearch (p_search) {
+        await axios.get(`https://dapi.kakao.com/v2/local/search/keyword.json?y=37.514322572335935&x=127.06283102249932&radius=20000&query=${p_search}`, {
             headers : {
                 Authorization:`KakaoAK ${process.env.VUE_APP_KAKAO_KEY}`
             }
         }).then(repsonse => {         
             this.list = repsonse.data.documents;
             this.list_meta= repsonse.data.meta;
-            //console.log(repsonse.data.documents);
+            this.currentX = repsonse.data.documents[0].x;
+            this.currentY = repsonse.data.documents[0].y;
         }).catch(error => {
             console.error(error);
         }) 
@@ -226,19 +240,21 @@
         this.keyword="";
     },
 
-    kakaoCategory(p_code) {
+    async kakaoCategory(p_code) {
         //console.log(this.currentY);
-        axios.get(`https://dapi.kakao.com/v2/local/search/category.json?category\_group\_code=${p_code}&radius=20000&y=${this.currentY}&x=${this.currentX}`, {
+        await axios.get(`https://dapi.kakao.com/v2/local/search/category.json?category\_group\_code=${p_code}&radius=20000&y=${this.currentY}&x=${this.currentX}`, {
             headers : {
                 Authorization:`KakaoAK ${process.env.VUE_APP_KAKAO_KEY}`
             }
         }).then(repsonse => {         
             this.list = repsonse.data.documents;
             this.list_meta= repsonse.data.meta;
-           // console.log(repsonse.data.documents);
+            //현재 위치 셋팅
+ 
         }).catch(error => {
             console.error(error);
         }) 
+        this.getWeatherInfo();
         this.clearSelectedItem();
     },
 
@@ -261,7 +277,7 @@
         if(p_search =="주변") {  
             navigator.geolocation.getCurrentPosition(pos => {
             this.currentY = pos.coords.latitude;
-            this.currentX = pos.coords.longitude;
+            this.currentX = pos.coords.longitude; 
             }, err => {   
             console.error(error);
             })
