@@ -19,12 +19,10 @@ const router = new VueRouter({
  * next : 이동될 때 실행되는 함수.
  */
 router.beforeEach(function (to, from, next) {
-    console.log('user/hasToken=' + store.getters['user/hasToken']);
-    console.log('page/menuList=' + store.getters['page/menuList'].login.path);
-    console.log('to.path=' + to.path);
-    if(!(store.getters['user/hasToken'] && to.path === store.getters['page/menuList'].login.path)){
+ 
+    //if(!(store.getters['user/hasToken'] && to.path === store.getters['page/menuList'].login.path)){
         next();
-    }
+   // }
 });
 
 /**
