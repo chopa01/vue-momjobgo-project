@@ -214,7 +214,7 @@
         axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${this.currentY}&lon=${this.currentX}&appid=${process.env.VUE_APP_WEATHER_KEY}&units=metric`
         ).then(repsonse => {   
      
-            document.getElementById("testImg").src =  "http://openweathermap.org/img/wn/" + repsonse.data.weather[0].icon + "@2x.png"; 
+            document.getElementById("testImg").src =  "https://openweathermap.org/img/wn/" + repsonse.data.weather[0].icon + "@2x.png"; 
         }).catch(error => {
             console.error(error);
         }
