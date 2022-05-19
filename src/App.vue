@@ -42,9 +42,9 @@ export default {
         checkToken(){
             const nowPath = window.location.pathname;
             // 현재 토큰이 있는지 확인 .
-            if( this.hasToken && nowPath !== this.getPath('home')){
+            if( this.hasToken && nowPath !== this.getPath('board')){
                 // 토큰이 존재할 때 홈으로 이동.
-                this.$router.push({ path: this.menuList.home.path });
+                this.$router.push({ path: this.menuList.board.path });
             } else if (!this.hasToken && nowPath !== this.getPath('login')){
                 // 토큰이 없을 때 로그인 페이지로 이동.
                 this.$router.push({ path: this.menuList.login.path });
