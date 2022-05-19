@@ -20,9 +20,9 @@ const router = new VueRouter({
  */
 router.beforeEach(function (to, from, next) {
  
-    //if(!(store.getters['user/hasToken'] && to.path === store.getters['page/menuList'].login.path)){
+    if(!(store.getters['user/hasToken'] && to.path === store.getters['page/menuList'].login.path)){
         next();
-   // }
+    }
 });
 
 /**
