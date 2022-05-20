@@ -11,11 +11,10 @@
             <v-select
             :items="guItems"
             label="구"  
-            outlined   item-text="text"     v-model="guData" 
+            outlined   item-text="text"     v-model="guData" v-on:change="selectDongItem"
             ></v-select>
            <v-select  
-            label="동" 
-            outlined
+            label="동"  :items="dongItems" item-text="text"  v-model="dongData"   outlined
             ></v-select>
 
 
@@ -52,16 +51,15 @@
   export default {
         data : () => ({ 
             list : [],
+            dongData:"",
             guData:"",
             guItems:[
                  { text: "수정구" },
                  { text: "중원구" },
                  { text: "분당구" },
             ] ,
-            dongData:[
-
-            ],
-                  //테이블 헤더.
+            dongItems:[],
+    //테이블 헤더.
             headers: [
                 { text: "카테고리", value: "val003" },
                 { text: "상호명", value: "val004" },
@@ -100,7 +98,7 @@
 
         methods: {
             initialize() {
-              this.callSungNam(); 
+              //this.callSungNam(); 
             },
             initMap() {
             // var infowindow = new kakao.maps.InfoWindow({zIndex:1});
@@ -115,17 +113,24 @@
             },
 
             async callSungNam() {
-              console.log(this.guData);
+            // console.log(this.guData);
+            // console.log(this.dongData);
+            if(this.guData == "") {
+                alert('구를 선택하세요');
+                return false;
+            }
               await  axios.get('https://devcury.kr/api/api/sungnam', {
                     params : {
                         serviceKey:'+CV9cAjGWIP4RDgeoi0WYbtAb2U4Y6nGspRxdEAWmiAbN4uSzonWXR4k1+G22bdJtqHyYCFYXEw/fQsV26yc0Q==',
                         pageNo:1,
                         numOfRows:50,
-                        gu:'수정구',
-                        dong:'수진2동'
+                        gu:this.guData,
+                        dong:this.dongData
                     }
                 }).then(repsonse => {
                     this.list =repsonse.data.response.body.items.item;
+                    //console.log(repsonse.data.response.body);
+                  //  console.log(repsonse.data.response.body.totalCount);
           
                    
              }).catch(error => {
@@ -170,8 +175,24 @@
                 // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
                 this.map.setCenter(coords);   
              },
-          
-    
+            //동 데이터 가져오기
+            selectDongItem () {  
+                this.dongItems=[];
+                if (this.guData == "수정구") {
+                this.dongItems.push(
+                { text :"신흥1동"}, {text :"신흥2동"},{text :"신흥3동"},{text :"태평1동"}, {text :"태평2동"},{text :"태평3동"}, {text :"태평4동"},{text :"수진1동"}, {text :"수진2동"},
+                {text :"단대동"}, {text :"산성동"},{text :"양지동"}, {text :"복정동"}, {text :"위례동"}, {text :"신촌동"})
+                } else if (this.guData == "중원구") {
+                this.dongItems.push(
+                { text :"성남동"}, {text :"중앙동"},{text :"금광1동"},{text :"금광2동"}, {text :"은행1동"},{text :"은행2동"}, {text :"상대원1동"},{text :"상대원2동"}, {text :"상대원3동"},
+                {text :"하대원동"}, {text :"도촌동"})
+                }else if (this.guData == "분당구") {
+                this.dongItems.push(
+                { text :"분당동"}, {text :"수내1동"},{text :"수내2동"},{text :"수내3동"}, {text :"정자동"},{text :"정자1동"}, {text :"정자2동"},{text :"정자3동"}, {text :"서현1동"},
+                {text :"서현2동"}, {text :"이매1동"},{text :"이매2동"}, {text :"야탑1동"}, {text :"야탑2동"}, {text :"야탑3동"},{text :"금곡동"}, {text :"구미동"},{text :"구미1동"}, {text :"판교동"}, {text :"삼평동"}, 
+                {text :"백현동"},{text :"운중동"})
+                } else {}
+            }
          }
    }
 </script>
