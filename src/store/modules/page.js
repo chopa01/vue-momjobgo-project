@@ -2,7 +2,7 @@ import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/login/LoginView.vue'
 import UserView from '@/views/UserView.vue'
 import BoardView from '@/views/board/BoardsView.vue'
-
+import SungNamView from '@/views/SungNamView.vue'
 
 export default {
 
@@ -40,7 +40,16 @@ export default {
                 },
                 component : BoardView
             },
-            
+            sungname : {
+                path: `/sungname`,
+                name: `sungname`,
+                meta: {
+                    title: `성남사랑상품권 가맹점 통합 검색`,
+                    icon: `table_rows`,
+                    display : true
+                },
+                component : SungNamView
+            },           
             user : {
                 path: `/user`,
                 name: `user`,

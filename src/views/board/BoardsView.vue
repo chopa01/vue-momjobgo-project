@@ -138,7 +138,7 @@
 
 <script>
     import { mapGetters } from "vuex";
-
+    import axios from "axios";
     import BoardCommentsViewVue from "./BoardCommentsView.vue";
     import BoardMixin from "@/mixins/board";
     import DateMixin from "@/mixins/date";
@@ -232,7 +232,8 @@
 
         methods: {
             initialize() {
-               this.callBoards();
+       
+               this.callBoards(); 
             },
 
             async callBoards() {

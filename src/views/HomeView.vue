@@ -247,6 +247,7 @@
             }
         }).then(repsonse => {         
             this.list = repsonse.data.documents;
+            //console.log(repsonse);
            // this.list_meta= repsonse.data.meta;
  
         }).catch(error => {
