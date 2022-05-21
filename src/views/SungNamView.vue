@@ -1,5 +1,4 @@
 <template>
-
 <v-data-table :headers="headers" :items="list" sort-by="calories" class="elevation-1">   
      <template #top> 
 
@@ -26,7 +25,7 @@
 
         </v-row> 
         
-        <v-card  max-width="800" class="mx-auto">
+        <v-card  max-width="900" class="mx-auto">
  
         <div id="map" class="map"></div> 
         </v-card>
@@ -119,9 +118,13 @@
                 alert('구를 선택하세요');
                 return false;
             }
+            if(this.dongData == "") {
+                alert('동을 선택하세요');
+                return false;
+            }
               await  axios.get('https://devcury.kr/api/api/sungnam', {
                     params : {
-                        serviceKey:'+CV9cAjGWIP4RDgeoi0WYbtAb2U4Y6nGspRxdEAWmiAbN4uSzonWXR4k1+G22bdJtqHyYCFYXEw/fQsV26yc0Q==',
+                        serviceKey: process.env.VUE_APP_SUNGNAM_KEY,
                         pageNo:1,
                         numOfRows:50,
                         gu:this.guData,
