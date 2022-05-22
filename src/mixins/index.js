@@ -38,6 +38,7 @@ export default {
                 } else if(e.response?.data?.error){
                     alert(e.response.data.error);
                 }
+                return e.response;
             });
             
         },
